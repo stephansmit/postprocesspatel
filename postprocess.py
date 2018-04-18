@@ -24,7 +24,7 @@ class PipeCase():
         self.startnumber = self.get_startnumber()
         self.copyoldpostprocessfolder()
         self.copypostprocessfolder()
-        self.write_postprocessparamfile()
+        #self.write_postprocessparamfile()
         
     def get_number_files(self):
         data_dir = "/".join([self.caselocation, self.datafoldername])
@@ -127,21 +127,32 @@ class PipeCase():
         return casemap[self.casename]['lpow']
     
     def copyoldpostprocessfolder(self):
+        print("copying the old post to post_old for case:"+ self.casename)
+
+
         string = "/".join([self.caselocation,self.postprocessfoldername])
-        os.system('cp -r ' + string + ' ' + string+"_old")
-    
+        if os.path.exists(string + "_old"):       
+            #os.system('cp -r ' + string + ' ' + string+"_old2")
+            print('cp -r ' + string + ' ' + string+"_old2")
+        else:
+            #os.system('cp -r ' + string + ' ' + string+"_old")
+            print('cp -r ' + string + ' ' + string+"_old")
+
     def copypostprocessfolder(self):
-        os.system('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
+        print("copying the new post to post for case:"+ self.casename)
+        #os.system('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
+        print('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
     
     
     def write_postprocessparamfile(self):
         filename = "/".join([self.caselocation ,self.postprocessfoldername, 'parameters'])
-        file = open("parameters","w") 
-        file.write(" ".join([self.numberfiles,self.startnumber]))
-        file.write(" ".join([self.reynolds,self.prandtl]))
-        file.write(" ".join([self.streamwise_length,self.spanwise_length,self.stretch_factor]))
-        file.write(" ".join([self.rpow, self.mpow, self.lpow]))
-        file.write(self.volumetric_heatsource)
+        print("writing the parameter file for case:"+ self.casename)
+        file = open(filename,"w") 
+        file.write(" ".join([str(self.numberfiles),str(self.startnumber)])+'\n')
+        file.write(" ".join([str(self.reynolds),str(self.prandtl)])+'\n')
+        file.write(" ".join([str(self.streamwise_length),str(self.spanwise_length),str(self.stretch_factor)])+'\n')
+        file.write(" ".join([str(self.rpow), str(self.mpow), str(self.lpow)])+'\n')
+        file.write(str(self.volumetric_heatsource))
         file.close()
 
 
@@ -174,16 +185,4 @@ if __name__=="__main__":
                   }
     Cases = [PipeCase(x, casemap) for x in cases]
 
-    for i in Cases:
-        print(i.casename)
-        print(i.numberfiles)
-        print(i.startnumber)
-        print(i.reynolds)
-        print(i.prandtl)
-        print(i.streamwise_length)
-        print(i.spanwise_length)
-        print(i.volumetric_heatsource)
-        print(i.rpow)
-        print(i.mpow)
-        print(i.lpow)
 
