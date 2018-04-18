@@ -22,9 +22,9 @@ class PipeCase():
         self.prandtl = self.get_prandtl()
         self.numberfiles = self.get_number_files()
         self.startnumber = self.get_startnumber()
-        self.copyoldpostprocessfolder()
-        self.copypostprocessfolder()
-        #self.write_postprocessparamfile()
+        #self.copyoldpostprocessfolder()
+        #self.copypostprocessfolder()
+        self.write_postprocessparamfile()
         
     def get_number_files(self):
         data_dir = "/".join([self.caselocation, self.datafoldername])
@@ -132,16 +132,16 @@ class PipeCase():
 
         string = "/".join([self.caselocation,self.postprocessfoldername])
         if os.path.exists(string + "_old"):       
-            #os.system('cp -r ' + string + ' ' + string+"_old2")
-            print('cp -r ' + string + ' ' + string+"_old2")
+            os.system('cp -r ' + string + ' ' + string+"_old2")
+            #print('cp -r ' + string + ' ' + string+"_old2")
         else:
-            #os.system('cp -r ' + string + ' ' + string+"_old")
-            print('cp -r ' + string + ' ' + string+"_old")
+            os.system('cp -r ' + string + ' ' + string+"_old")
+            #print('cp -r ' + string + ' ' + string+"_old")
 
     def copypostprocessfolder(self):
         print("copying the new post to post for case:"+ self.casename)
-        #os.system('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
-        print('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
+        os.system('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
+        #print('cp -r ' + "/".join([self.postprocesslocation,self.postprocessfoldername]) + ' ' + self.caselocation + '/')
     
     
     def write_postprocessparamfile(self):
