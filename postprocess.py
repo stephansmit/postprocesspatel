@@ -28,7 +28,7 @@ class PipeCase():
         self.numberofcores = self.get_number_of_cores()
         self.write_slurmjob()
 	#self.compile_postprocess()
-        self.submit_slurmjob()
+        #self.submit_slurmjob()
 
         
     def get_number_files(self):
@@ -42,7 +42,7 @@ class PipeCase():
             numbers.append(matches.group(0))
         startnumber = sorted([ int(x) for x in numbers])[0]
         endnumber = sorted([ int(x) for x in numbers])[-1]
-        return endnumber-startnumber
+        return endnumber-startnumber-1
      
     def get_startnumber(self):
         data_dir = "/".join([self.caselocation, self.datafoldername])
@@ -53,7 +53,7 @@ class PipeCase():
             matches = re.search(regex, i)
             numbers.append(matches.group(0))
         startnumber = sorted([ int(x) for x in numbers])[0]
-        return startnumber
+        return startnumber+1
         
 
     def get_mainfile_lines(self):
