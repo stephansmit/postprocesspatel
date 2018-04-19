@@ -25,12 +25,25 @@ class PipeCase():
         #self.copyoldpostprocessfolder()
         #self.copypostprocessfolder()
         self.write_postprocessparamfile()
+        self.numberofcores = self.get_number_of_cores()
+        self.write_slurmjob()
+	#self.compile_postprocess()
+        self.submit_slurmjob()
+
         
     def get_number_files(self):
         data_dir = "/".join([self.caselocation, self.datafoldername])
-        numberfiles = len([name for name in os.listdir(data_dir) if os.path.isfile(data_dir + '/'+name)])
-        return numberfiles
-    
+        files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + '/'+name)]
+        
+        numbers = []
+        for i in files:
+            regex = "[0-9]+"
+            matches = re.search(regex, i)
+            numbers.append(matches.group(0))
+        startnumber = sorted([ int(x) for x in numbers])[0]
+        endnumber = sorted([ int(x) for x in numbers])[-1]
+        return endnumber-startnumber
+     
     def get_startnumber(self):
         data_dir = "/".join([self.caselocation, self.datafoldername])
         files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + '/'+name)]
@@ -154,8 +167,35 @@ class PipeCase():
         file.write(" ".join([str(self.rpow), str(self.mpow), str(self.lpow)])+'\n')
         file.write(str(self.volumetric_heatsource))
         file.close()
+    def get_number_of_cores(self):
+        return 24
+    
+    def write_slurmjob(self):
+        print("writing job file")
+        # Read in the template file
+        with open('JOB_template', 'r') as file :
+            filedata = file.read()
+        # Replace the target string
+        filedata2 = filedata.replace('REPLACE_CORES', str(self.numberofcores))
+        self.jobname = "JOB_"+self.casename
+        self.jobfile = "/".join([self.caselocation ,self.postprocessfoldername, self.jobname])
+        # Write the file out again
+        with open(self.jobfile, 'w') as file:
+            file.write(filedata2)
+        return
+    
+    def submit_slurmjob(self):
+        print("submitting job for case:" + self.casename)
+        #print('cd '+ '/'.join([self.caselocation, self.postprocessfoldername]) + ' && sbatch '+ self.jobname)
+        os.system('cd '+ self.caselocation + ' && sbatch '+ self.jobname)
 
 
+    def compile_postprocess(self):
+        print('compiling post processing for case:' +self.casename)
+        #print('cd '+ '/'.join([self.caselocation, self.postprocessfoldername]) + ' && make -f makepost')
+        os.system('cd '+ '/'.join([self.caselocation, self.postprocessfoldername]) + ' && make -f makepost')
+
+    
 
 
 
